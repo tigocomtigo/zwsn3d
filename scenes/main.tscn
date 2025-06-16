@@ -407,6 +407,10 @@ text = "Adicionar Cubo"
 layout_mode = 2
 text = "Adicionar Emissor"
 
+[node name="Add_Receptor" type="Button" parent="CanvasLayer/AddItems"]
+layout_mode = 2
+text = "Adicionar Receptor"
+
 [node name="TransformType" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 2
 anchor_top = 1.0
@@ -582,6 +586,7 @@ shape = SubResource("ConcavePolygonShape3D_wtf71")
 
 [connection signal="pressed" from="CanvasLayer/AddItems/Add_Cube" to="." method="_on_add_cube_pressed"]
 [connection signal="pressed" from="CanvasLayer/AddItems/Add_Sphere" to="." method="_on_add_sphere_pressed"]
+[connection signal="pressed" from="CanvasLayer/AddItems/Add_Receptor" to="." method="_on_add_receptor_pressed"]
 [connection signal="pressed" from="CanvasLayer/TransformType/Move" to="CanvasLayer" method="_on_move_pressed"]
 [connection signal="pressed" from="CanvasLayer/TransformType/Scale" to="CanvasLayer" method="_on_scale_pressed"]
 [connection signal="text_submitted" from="CanvasLayer/TransformType/Pitch" to="CanvasLayer" method="_on_pitch_text_submitted"]

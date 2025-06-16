@@ -2,7 +2,7 @@ extends Node3D
 
 @export var initial_direction: Vector3 = Vector3.FORWARD
 
-var energy: float = 10000.0
+var energy: float = 10.0
 var max_bounces := 3
 var ray_length := 100.0
 var attenuation_per_meter := 0.05
@@ -61,11 +61,11 @@ func propagate(origin: Vector3, dir: Vector3, energy_left: float, bounce: int):
 		if energy_after <= 0:
 			return
 
-		if collider.is_in_group("sensores"):
-			print("→ Sensor atingido: ", collider.name, " com energia ", energy_after)
-
-		var reflect_dir = dir.bounce(normal).normalized()
-		propagate(hit_pos + reflect_dir * 0.001, reflect_dir, energy_after * 0.8, bounce + 1)
+		if collider.is_in_group("sensors"):
+			collider.get_parent().receive_signal(energy_after)
+		else:
+			var reflect_dir = dir.bounce(normal).normalized()
+			propagate(hit_pos + reflect_dir * 0.001, reflect_dir, energy_after * 0.8, bounce + 1)
 	else:
 		show_debug_raycast(origin, to_point)
 
