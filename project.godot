@@ -15,6 +15,10 @@ run/main_scene="uid://cixip7vsf3c50"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Global="*res://global.gd"
+
 [debug]
 
 settings/physics_interpolation/enable_warnings=false
@@ -26,6 +30,8 @@ shader_language/warnings/enable=false
 shapes=""
 collision_childs=""
 floor=""
+axes=""
+signal_emmiters=""
 
 [input]
 

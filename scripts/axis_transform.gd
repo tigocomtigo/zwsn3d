@@ -31,7 +31,7 @@ func _input(event):
 				active_axis = Vector3.ZERO
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	elif is_axis_selected and event is InputEventMouseMotion:
-		_move_objects_along_axis(event)
+		_transform_objects_along_axis(event)
 
 
 
@@ -62,21 +62,25 @@ func _handle_click(mouse_pos: Vector2):
 		last_mouse_pos = mouse_pos
 		#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-func _move_objects_along_axis(event: InputEventMouseMotion):
-	var delta = event.relative
-	var sensitivity = 0.2
-	var move_amount := 0.0
-	
-	# Detecta qual componente do delta usar com base no eixo ativo
-	if active_axis == Vector3.RIGHT:  # eixo X
-		move_amount = delta.x * sensitivity
-	elif active_axis == Vector3.UP:  # eixo Y
-		move_amount = -delta.y * sensitivity  # geralmente inverte o Y do mouse
-	elif active_axis == Vector3.FORWARD:  # eixo Z
-		move_amount = delta.x * sensitivity  # pode ajustar se quiser usar Y também
-	
-	var move_vector = active_axis * move_amount
-	movable_objects.translate(move_vector)
+func _transform_objects_along_axis(event: InputEventMouseMotion):
+	var delta := event.relative
+	var sensitivity := 0.01
+	var scale_change := Vector3.ZERO
+
+	if active_axis == Vector3.RIGHT:
+		scale_change.x = delta.x * sensitivity
+	elif active_axis == Vector3.UP:
+		scale_change.y = -delta.y * sensitivity
+	elif active_axis == Vector3.FORWARD:
+		scale_change.z = delta.x * sensitivity
+
+	var new_scale := movable_objects.scale + scale_change
+
+	new_scale = new_scale.clamp(Vector3(0.1, 0.1, 0.1), Vector3(100, 100, 100))
+
+	movable_objects.scale = new_scale
+	get_tree().call_group("axes",'change_scale', new_scale)
+
 
 func hide_axes():
 	$x/Cylinder/StaticBody3D/CollisionShape3D.disabled = true

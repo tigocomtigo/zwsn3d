@@ -2,6 +2,11 @@ extends Node3D
 @onready var cam = $Camera3D
 @onready var add_items = $CanvasLayer/AddItems
 
+func _ready() -> void:
+	Global.axis_move = $AxisMove
+	Global.axis_scale = $AxisScale
+	pass
+
 func _physics_process(delta: float) -> void:
 	if Input.is_action_pressed("add_item"):
 		add_items.visible = true
@@ -12,7 +17,6 @@ func _physics_process(delta: float) -> void:
 func _on_add_cube_pressed() -> void:
 	var cube = MeshInstance3D.new()
 	cube.set_script(load("res://scripts/cube_script.gd"))
-	cube.controls = $AxisMove
 	cube.camera = $Camera3D
 	cube.add_to_group('shapes')
 	cube.mesh = BoxMesh.new()
@@ -41,21 +45,30 @@ func _on_add_cube_pressed() -> void:
 
 
 func _on_add_sphere_pressed() -> void:
-	var sphere = MeshInstance3D.new()
-	sphere.mesh = SphereMesh.new()
-	
+	var cube = MeshInstance3D.new()
+	cube.set_script(load("res://scripts/sphere_script.gd"))
+	cube.camera = $Camera3D
+	cube.add_to_group('shapes')
+	cube.mesh = SphereMesh.new()
+
 	var distance := 5.0
-
-	# Cria um novo transform com a rotação da câmera
 	var spawn_transform: Transform3D = cam.global_transform
-
-	# Move o transform para frente com base na direção da câmera
 	spawn_transform.origin += -cam.global_transform.basis.z * distance
 	
-		# Cria um transform com rotação global neutra (sem rotação)
+	cube.global_transform = spawn_transform
+	cube.rotation = Vector3.ZERO
 
-	# Aplica o transform ao cubo
-	sphere.global_transform = spawn_transform
-
-	add_child(sphere)
-	pass # Replace with function body.
+	var collision = CollisionShape3D.new()
+	collision.shape = SphereShape3D.new()
+	
+	var body = StaticBody3D.new()
+	body.add_to_group('collision_childs')
+	body.add_to_group('signal_emmiters')
+	
+	var parentNode = get_node("Cubos")
+	
+	parentNode.add_child(cube)	
+	cube.add_child(body)
+	body.add_child(collision)
+	
+	cube.generate_rays()

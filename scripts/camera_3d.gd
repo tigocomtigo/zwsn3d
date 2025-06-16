@@ -12,7 +12,7 @@ var pitch := 0.0
 var is_middle_button_pressed := false
 
 func _input(event):
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_MIDDLE:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		is_middle_button_pressed = event.pressed
 
 		if is_middle_button_pressed:
@@ -43,6 +43,7 @@ func _input(event):
 		var result = space_state.intersect_ray(query)
 		if result:
 			if result.collider.is_in_group('collision_childs'):
+				Global.active_object = result.collider.get_parent()
 				result.collider.get_parent().collision_handler()
 			if result.collider.is_in_group('floor'):
 				result.collider.get_parent().get_parent().click_handler()
